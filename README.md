@@ -11,7 +11,7 @@ A collection of beginner full-stack projects built with **HTML, CSS, JavaScript,
 - **Django**
 - **SQLite**
 
-1. [Task Manager](https://shiffananazeema.github.io/Mini-Full-Stack-Projects/Task%20Manager/)
+1. [Task Manager](https://task-manager-cebd.onrender.com)
 
    <img src="assets/task_manager.gif" alt="Task Manager" width="300" />
 
