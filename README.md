@@ -13,7 +13,7 @@ A collection of beginner full-stack projects built with **HTML, CSS, JavaScript,
 
 1. [Task Manager](https://shiffananazeema.github.io/Mini-Full-Stack-Projects/Task%20Manager/)
 
-   <img src="assets/task_manager.gif" alt="Task Manager" width="100" />
+   <img src="assets/task_manager.gif" alt="Task Manager" width="300" />
 
 2. Expense tracker
 3. Meal Planner
