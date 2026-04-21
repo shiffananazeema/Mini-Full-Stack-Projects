@@ -1,0 +1,49 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="{% static 'Tasks/style.css' %}">
+</head>
+
+<body>
+    <div class="auth-page">
+        <div class="auth-card">
+            <h1>Login</h1>
+
+            <form method="POST" class="auth-form">
+                {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                <div class="form-errors">
+                    {{ form.non_field_errors }}
+                </div>
+                {% endif %}
+
+                <label>Username</label>
+                {{ form.username }}
+                {% if form.username.errors %}
+                <div class="field-error">{{ form.username.errors }}</div>
+                {% endif %}
+
+                <label>Password</label>
+                {{ form.password }}
+                {% if form.password.errors %}
+                <div class="field-error">{{ form.password.errors }}</div>
+                {% endif %}
+
+                <button type="submit">Login</button>
+            </form>
+
+            <p class="auth-link-text">
+                Don’t have an account?
+                <a href="{% url 'register' %}">Register</a>
+            </p>
+        </div>
+    </div>
+</body>
+
+</html>
