@@ -11,6 +11,8 @@ A collection of beginner full-stack projects built with **HTML, CSS, JavaScript,
 - **Django**
 - **SQLite**
 
+<!-- markdownlint-disable MD033 -->
+
 1. [Task Manager](https://task-manager-cebd.onrender.com)
 
    <img src="assets/task_manager.gif" alt="Task Manager" width="300" />
@@ -18,3 +20,5 @@ A collection of beginner full-stack projects built with **HTML, CSS, JavaScript,
 2. Expense tracker
 3. Meal Planner
 4. Booking App
+
+<!-- markdownlint-enable MD033 -->

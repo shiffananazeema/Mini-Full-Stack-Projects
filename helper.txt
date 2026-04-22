@@ -1,0 +1,11 @@
+1. Task Manager - Render
+
+- Install gunicorn - pip install gunicorn
+- Install whitenoise - pip install whitenoise
+- Requirements.txt - pip freeze > requirements.txt
+- Create build.sh
+- Create Procfile
+- Update settings.py
+- Push GitHub
+- Deploy to Render 
+- Add Environment Variables in Render - Version, Secret Key, Debug, Allowed Hosts
