@@ -15,7 +15,7 @@ A collection of beginner full-stack projects built with **HTML, CSS, JavaScript,
 
 1. [Task Manager](https://task-manager-cebd.onrender.com)
 
-   <img src="assets/task_manager.gif" alt="Task Manager" width="300" />
+   <img src="assets/task_manager.gif" alt="Task Manager" width="500" />
 
 2. [Expense tracker](https://expense-tracker-tvay.onrender.com)
 
