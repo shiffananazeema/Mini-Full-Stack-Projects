@@ -19,7 +19,7 @@ A collection of beginner full-stack projects built with **HTML, CSS, JavaScript,
 
 2. [Expense tracker](https://expense-tracker-tvay.onrender.com)
 
-   <img src="assets/expense_tracker.gif" alt="Task Manager" width="450" />
+   <img src="assets/expense_tracker.gif" alt="Expense Tracker" width="750" />
 
 3. Meal Planner
 4. Booking App
