@@ -13,11 +13,6 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 import os
 from pathlib import Path
 
-try:
-    import dj_database_url
-except ImportError:  # pragma: no cover - local fallback when dependency is not installed yet
-    dj_database_url = None
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -31,22 +26,7 @@ SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-m1srrl#1vy8u8qa1vu^eh3ixd6
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DEBUG", "True").lower() == "true"
 
-ALLOWED_HOSTS = ["127.0.0.1", "localhost", "testserver"]
-
-render_external_hostname = os.getenv("RENDER_EXTERNAL_HOSTNAME")
-if render_external_hostname:
-    ALLOWED_HOSTS.append(render_external_hostname)
-
-additional_hosts = os.getenv("ALLOWED_HOSTS", "")
-for host in additional_hosts.split(","):
-    host = host.strip()
-    if host:
-        ALLOWED_HOSTS.append(host)
-
-CSRF_TRUSTED_ORIGINS = []
-if render_external_hostname:
-    CSRF_TRUSTED_ORIGINS.append(f"https://{render_external_hostname}")
-
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -100,11 +80,6 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
-database_url = os.getenv("DATABASE_URL")
-if database_url and dj_database_url:
-    DATABASES["default"] = dj_database_url.parse(database_url, conn_max_age=600, ssl_require=False)
-
 
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
