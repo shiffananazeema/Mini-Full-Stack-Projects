@@ -1,0 +1,201 @@
+{% extends "expenses/base.html" %}
+
+{% block title %}Expense Tracker{% endblock %}
+
+{% block content %}
+<div class="page-shell">
+    <header class="header">
+        <div>
+            <h1>Expense Tracker</h1>
+            <p>Simple expense tracking with category totals and a pie chart.</p>
+        </div>
+        <div class="header-actions">
+            <span class="username-text">{{ request.user.username }}</span>
+            <button type="button" class="primary-btn" data-open-modal>Add Expense</button>
+            <form method="post" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="secondary-btn">Logout</button>
+            </form>
+        </div>
+    </header>
+
+    {% if messages %}
+        <section class="messages">
+            {% for message in messages %}
+                <div class="message {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </section>
+    {% endif %}
+
+    <section class="stats-grid">
+        <article class="card">
+            <h2>${{ total_spent }}</h2>
+            <p>Total spent</p>
+        </article>
+        <article class="card">
+            <h2>${{ monthly_total }}</h2>
+            <p>This month</p>
+        </article>
+        <article class="card">
+            <h2>{{ expenses|length }}</h2>
+            <p>Total entries</p>
+        </article>
+        <article class="card">
+            <h2>{% if latest_expense %}{{ latest_expense.expense_date|date:"M d Y" }}{% else %}No data{% endif %}</h2>
+            <p>Latest expense</p>
+        </article>
+    </section>
+
+    <main class="content-grid">
+        <section class="panel">
+            <div class="section-heading">
+                <h2>Category Breakdown</h2>
+                <p>Pie chart and totals by category.</p>
+            </div>
+            <div class="chart-section">
+                <div class="chart-box">
+                    <canvas id="categoryPieChart"></canvas>
+                </div>
+                <div class="legend-list">
+                    {% for item in category_breakdown %}
+                        <div class="legend-row">
+                            <span>{{ item.category }}</span>
+                            <strong>${{ item.total }} ({{ item.percentage }}%)</strong>
+                        </div>
+                    {% empty %}
+                        <p class="empty-state">Add expenses to see the pie chart.</p>
+                    {% endfor %}
+                </div>
+            </div>
+            {{ category_labels|json_script:"category-labels" }}
+            {{ category_values|json_script:"category-values" }}
+        </section>
+
+        <section class="panel">
+            <div class="section-heading">
+                <h2>Monthly Totals</h2>
+                <p>Month-by-month totals in a simple list.</p>
+            </div>
+            <div class="simple-list">
+                {% for month in monthly_expenses %}
+                    <div class="simple-row">
+                        <span>{{ month.label }}</span>
+                        <strong>${{ month.total }}</strong>
+                    </div>
+                {% empty %}
+                    <p class="empty-state">No monthly data yet.</p>
+                {% endfor %}
+            </div>
+        </section>
+
+        <section class="panel full-width">
+            <div class="section-heading">
+                <h2>Recent Expenses</h2>
+                <p>Your latest saved expenses.</p>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Category</th>
+                            <th>Amount</th>
+                            <th>Date</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for expense in expenses %}
+                            <tr>
+                                <td>{{ expense.title }}</td>
+                                <td>{{ expense.category }}</td>
+                                <td>${{ expense.amount }}</td>
+                                <td>{{ expense.expense_date|date:"M d Y" }}</td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button
+                                            type="button"
+                                            class="edit-btn"
+                                            data-open-edit-modal
+                                            data-expense-id="{{ expense.id }}"
+                                            data-title="{{ expense.title }}"
+                                            data-category="{{ expense.category }}"
+                                            data-amount="{{ expense.amount }}"
+                                            data-expense-date="{{ expense.expense_date|date:'Y-m-d' }}"
+                                        >
+                                            Edit
+                                        </button>
+                                        <form method="post" action="{% url 'delete_expense' expense.id %}">
+                                            {% csrf_token %}
+                                            <button type="submit" class="delete-btn">Delete</button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="5" class="empty-table">No expenses added yet.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+</div>
+
+<div class="modal-backdrop{% if form.errors %} is-visible{% endif %}" id="expenseModal" aria-hidden="{% if form.errors %}false{% else %}true{% endif %}">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="expense-modal-title">
+        <div class="modal-header">
+            <h2 id="expense-modal-title">Add Expense</h2>
+            <button type="button" class="modal-close" data-close-modal aria-label="Close popup">&times;</button>
+        </div>
+        <form method="post" action="{% url 'add_expense' %}" class="expense-form">
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="field-group">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.errors %}
+                        <small class="error-text">{{ field.errors|join:", " }}</small>
+                    {% endif %}
+                </div>
+            {% endfor %}
+            <div class="modal-actions">
+                <button type="button" class="secondary-btn" data-close-modal>Cancel</button>
+                <button type="submit" class="primary-btn">Save</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="modal-backdrop{% if editing_expense %} is-visible{% endif %}" id="editExpenseModal" aria-hidden="{% if editing_expense %}false{% else %}true{% endif %}">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="edit-expense-modal-title">
+        <div class="modal-header">
+            <h2 id="edit-expense-modal-title">Edit Expense</h2>
+            <button type="button" class="modal-close" data-close-modal aria-label="Close popup">&times;</button>
+        </div>
+        <form
+            method="post"
+            action="{% if editing_expense %}{% url 'edit_expense' editing_expense.id %}{% else %}#{% endif %}"
+            class="expense-form"
+            id="editExpenseForm"
+        >
+            {% csrf_token %}
+            {% for field in edit_form %}
+                <div class="field-group">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.errors %}
+                        <small class="error-text">{{ field.errors|join:", " }}</small>
+                    {% endif %}
+                </div>
+            {% endfor %}
+            <div class="modal-actions">
+                <button type="button" class="secondary-btn" data-close-modal>Cancel</button>
+                <button type="submit" class="primary-btn">Update</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

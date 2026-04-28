@@ -1,3 +1,34 @@
+All Projects - Deployment Guide
+
+- Create Folder - mkdir project_name
+- Create Virtual Environment - python -m venv env
+- Activate Virtual Environment - .\env\Scripts\activate  [deactivate - to deactivate virtual environment]
+- Install Django - pip install django / python.exe -m pip install --upgrade pip
+- Create Django Project - django-admin startproject project_name .
+- Create Django App - python manage.py startapp app_name
+
+- Register App in settings.py - INSTALLED_APPS = [ 'app_name', ]
+- Create Models in models.py
+- Make Migrations - python manage.py makemigrations
+- Migrate - python manage.py migrate
+
+- Register Models in admin.py
+- Create form in forms.py
+- Create Views in views.py
+- Create app URLs in urls.py
+- Connect app URLs to project URLs
+- Create Templates in templates folder
+- Create Static Files in static folder
+- Run Server - python manage.py runserver
+
+- Test Everything
+- Improve UI
+
+- git add .
+- git commit -m "message"
+- git push 
+
+
 1. Task Manager - Render
 
 - Install gunicorn - pip install gunicorn

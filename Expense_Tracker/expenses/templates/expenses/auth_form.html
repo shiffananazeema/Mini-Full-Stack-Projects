@@ -1,0 +1,50 @@
+{% extends "expenses/base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="auth-page">
+    <div class="auth-card">
+        <div class="auth-header">
+            <p class="eyebrow">Expense Tracker</p>
+            <h1>{{ title }}</h1>
+            <p>Use your account to manage your own expense list.</p>
+        </div>
+
+        {% if form.non_field_errors %}
+            <div class="message error">
+                {% for error in form.non_field_errors %}
+                    <div>{{ error }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <form method="post" class="expense-form">
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="field-group">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.errors %}
+                        <small class="error-text">{{ field.errors|join:", " }}</small>
+                    {% endif %}
+                    {% if field.help_text and field.name != "username" %}
+                        <small class="help-text">{{ field.help_text|safe }}</small>
+                    {% endif %}
+                </div>
+            {% endfor %}
+            <button type="submit" class="primary-btn auth-submit">{{ button_text }}</button>
+        </form>
+
+        <div class="auth-links">
+            {% if request.resolver_match.url_name == "login" %}
+                <span>Need an account?</span>
+                <a href="{% url 'register' %}">Register</a>
+            {% else %}
+                <span>Already have an account?</span>
+                <a href="{% url 'login' %}">Login</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
