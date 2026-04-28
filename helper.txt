@@ -29,8 +29,8 @@ All Projects - Deployment Guide
 - git push 
 
 
-1. Task Manager - Render
-
+Render
+``````
 - Install gunicorn - pip install gunicorn
 - Install whitenoise - pip install whitenoise
 - Requirements.txt - pip freeze > requirements.txt
